@@ -10,8 +10,8 @@
         <option name="gradleJvm" value="jbr-17" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$USER_HOME$/Documents/Coding/Android/GeoQuiz" />
+            <option value="$USER_HOME$/Documents/Coding/Android/GeoQuiz/app" />
           </set>
         </option>
       </GradleProjectSettings>
