@@ -4,22 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-//import android.widget.Toast
+import androidx.activity.viewModels
+import com.example.geoquiz.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var trueButton: Button
-  private lateinit var falseButton: Button
-  private lateinit var nextButton: ImageButton
-  private lateinit var prevButton: ImageButton
-  private lateinit var resetButton: Button
-  private lateinit var questionTextView: TextView
+  private lateinit var binding: ActivityMainBinding
 
   private val questionBank = listOf(
     Question(R.string.question_australia, true),
@@ -32,41 +25,38 @@ class MainActivity : AppCompatActivity() {
 
   private var currentIndex: Int = 0
 
+  private val quizViewModel: QuizViewModel by viewModels()
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Log.d(TAG, "onCreate(Bundle?) called")
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-    trueButton = findViewById(R.id.true_button)
-    falseButton = findViewById(R.id.false_button)
-    nextButton = findViewById(R.id.next_button)
-    prevButton = findViewById(R.id.prev_button)
-    resetButton = findViewById(R.id.reset_button)
-    questionTextView = findViewById(R.id.question_text_view)
+    Log.d(TAG, "Got a QuizViewModel: $quizViewModel")
 
-    resetButton.isEnabled = false
+    binding.resetButton.isEnabled = false
 
-    trueButton.setOnClickListener { view: View ->
+    binding.trueButton.setOnClickListener { view: View ->
       checkAnswer(true, view)
     }
 
-    falseButton.setOnClickListener { view: View ->
+    binding.falseButton.setOnClickListener { view: View ->
       checkAnswer(false, view)
     }
 
-    nextButton.setOnClickListener {
+    binding.nextButton.setOnClickListener {
       changeQuestion(1)
     }
 
-    prevButton.setOnClickListener {
+    binding.prevButton.setOnClickListener {
       changeQuestion(-1)
     }
 
-    resetButton.setOnClickListener {
+    binding.resetButton.setOnClickListener {
       resetQuiz()
     }
 
-    questionTextView.setOnClickListener {
+    binding.questionTextView.setOnClickListener {
       changeQuestion(1)
     }
 
@@ -111,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun updateQuestion() {
     val questionTextResId = questionBank[currentIndex].textResId
-    questionTextView.setText(questionTextResId)
+    binding.questionTextView.setText(questionTextResId)
   }
 
   private fun checkAnswer(userAnswer: Boolean, contextView: View) {
@@ -143,7 +133,7 @@ class MainActivity : AppCompatActivity() {
     val totalQuestions = questionBank.size
     val percentage = (score * 100) / totalQuestions
     val scoreText = getString(R.string.score_message, score, totalQuestions, percentage)
-    questionTextView.text = scoreText
+    binding.questionTextView.text = scoreText
   }
 
   private fun resetQuiz() {
@@ -157,13 +147,13 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun toggleQuestionButtons(state: Boolean) {
-    nextButton.isEnabled = state
-    prevButton.isEnabled = state
-    resetButton.isEnabled = !state
+    binding.nextButton.isEnabled = state
+    binding.prevButton.isEnabled = state
+    binding.resetButton.isEnabled = !state
   }
 
   private fun toggleAnswerButtons(state: Boolean) {
-    trueButton.isEnabled = state
-    falseButton.isEnabled = state
+    binding.trueButton.isEnabled = state
+    binding.falseButton.isEnabled = state
   }
 }
