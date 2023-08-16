@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -35,28 +36,27 @@
       tools:ignore="ButtonStyle" />
   </LinearLayout>
 
-
-  <ImageButton
+  <Button
     android:id="@+id/prev_button"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom|left"
-    android:src="@drawable/arrow_left"
-    android:minHeight="48dp"
-    android:minWidth="60dp"
-    android:contentDescription="@string/next_button"
-    tools:ignore="RtlHardcoded" />
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|start"
+    app:icon="@drawable/arrow_left"
+    app:iconGravity="end"
+    android:layout_margin = "4dp"
+    android:text="@string/prev_button"
+    tools:ignore="ButtonStyle" />
 
-  <ImageButton
+  <Button
     android:id="@+id/next_button"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom|right"
-    android:src="@drawable/arrow_right"
-    android:minHeight="48dp"
-    android:minWidth="60dp"
-    android:contentDescription="@string/prev_button"
-    tools:ignore="RtlHardcoded" />
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|end"
+    app:icon="@drawable/arrow_right"
+    app:iconGravity="start"
+    android:layout_margin = "4dp"
+    android:text="@string/next_button"
+    tools:ignore="ButtonStyle" />
 
   <Button
     android:id="@+id/reset_button"
