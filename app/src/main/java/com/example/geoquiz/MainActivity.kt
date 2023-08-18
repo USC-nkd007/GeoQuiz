@@ -14,16 +14,6 @@ class MainActivity : AppCompatActivity() {
 
   private lateinit var binding: ActivityMainBinding
 
-  private val questionBank = listOf(
-    Question(R.string.question_australia, true),
-    Question(R.string.question_oceans, true),
-    Question(R.string.question_mideast, false),
-    Question(R.string.question_africa, false),
-    Question(R.string.question_americas, true),
-    Question(R.string.question_asia, true)
-  )
-
-  private var currentIndex: Int = 0
 
   private val quizViewModel: QuizViewModel by viewModels()
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,19 +35,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     binding.nextButton.setOnClickListener {
-      changeQuestion(1)
+      quizViewModel.changeQuestion(1)
+      updateQuestion()
     }
 
     binding.prevButton.setOnClickListener {
-      changeQuestion(-1)
+      quizViewModel.changeQuestion(-1)
+      updateQuestion()
     }
 
     binding.resetButton.setOnClickListener {
-      resetQuiz()
+      quizViewModel.resetQuiz()
+      toggleQuestionButtons(true)
+      toggleAnswerButtons(true)
+      updateQuestion()
     }
 
     binding.questionTextView.setOnClickListener {
-      changeQuestion(1)
+      quizViewModel.changeQuestion(1)
+      updateQuestion()
     }
 
     updateQuestion()
@@ -88,27 +84,27 @@ class MainActivity : AppCompatActivity() {
     Log.d(TAG, "onDestroy() called")
   }
 
-  private fun changeQuestion(modifier: Int) {
-    currentIndex = (currentIndex + modifier) % questionBank.size
-    if (currentIndex < 0) {
-      currentIndex = questionBank.size - 1
-    }
-    updateQuestion()
-    if (questionBank[currentIndex].userAnswer == null) {
-      toggleAnswerButtons(true)
-    }
-  }
-
   private fun updateQuestion() {
-    val questionTextResId = questionBank[currentIndex].textResId
+    val questionTextResId = quizViewModel.currentQuestionText
     binding.questionTextView.setText(questionTextResId)
+    if (quizViewModel.currentQuestionUserAnswer == null) {
+      toggleAnswerButtons(true)
+    } else {
+      toggleAnswerButtons(false)
+    }
+    quizViewModel.updateScore()
+    if (quizViewModel.questionsLeft > 0) {
+      toggleQuestionButtons(true)
+    } else {
+      toggleQuestionButtons(false)
+      printScore()
+    }
   }
 
   private fun checkAnswer(userAnswer: Boolean, contextView: View) {
-    val correctAnswer: Boolean = questionBank[currentIndex].answer
-    questionBank[currentIndex].userAnswer = userAnswer
+    quizViewModel.updateAnswer(userAnswer)
 
-    val messageResId: Int = if (userAnswer == correctAnswer) {
+    val messageResId: Int = if (userAnswer == quizViewModel.currentQuestionAnswer) {
       R.string.correct_toast
     } else {
       R.string.incorrect_toast
@@ -116,34 +112,15 @@ class MainActivity : AppCompatActivity() {
 
     Snackbar.make(contextView, messageResId, Snackbar.LENGTH_SHORT).show()
     toggleAnswerButtons(false)
-    checkScore()
+    updateQuestion()
   }
 
-  private fun checkScore() {
-    var score = 0
-    for (i in questionBank) {
-      if (i.userAnswer == null) {
-        return
-      } else if (i.userAnswer == i.answer) {
-        score++
-      }
-    }
+  private fun printScore() {
     toggleQuestionButtons(false)
 
-    val totalQuestions = questionBank.size
-    val percentage = (score * 100) / totalQuestions
-    val scoreText = getString(R.string.score_message, score, totalQuestions, percentage)
+    val percentage = (quizViewModel.score * 100) / quizViewModel.totalQuestions
+    val scoreText = getString(R.string.score_message, quizViewModel.score, quizViewModel.totalQuestions, percentage)
     binding.questionTextView.text = scoreText
-  }
-
-  private fun resetQuiz() {
-    for (i in questionBank) {
-      i.userAnswer = null
-    }
-    toggleQuestionButtons(true)
-    toggleAnswerButtons(true)
-    currentIndex = 0
-    updateQuestion()
   }
 
   private fun toggleQuestionButtons(state: Boolean) {

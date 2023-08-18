@@ -1,17 +1,60 @@
 package com.example.geoquiz
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 
-private const val TAG = "QuizViewModel"
-
 class QuizViewModel : ViewModel() {
-  init {
-    Log.d(TAG, "ViewModel instance created")
+  private val questionBank = listOf(
+    Question(R.string.question_australia, true),
+    Question(R.string.question_oceans, true),
+    Question(R.string.question_mideast, false),
+    Question(R.string.question_africa, false),
+    Question(R.string.question_americas, true),
+    Question(R.string.question_asia, true)
+  )
+
+  private var currentIndex: Int = 0
+
+  var score: Int = 0
+  var questionsLeft: Int = 0
+  val currentQuestionAnswer: Boolean
+    get() = questionBank[currentIndex].answer
+
+  val currentQuestionUserAnswer: Boolean?
+    get() = questionBank[currentIndex].userAnswer
+
+  val currentQuestionText: Int
+    get() = questionBank[currentIndex].textResId
+
+  val totalQuestions: Int
+    get() = questionBank.size
+
+  fun changeQuestion(modifier: Int) {
+    currentIndex = (currentIndex + modifier) % questionBank.size
+    if (currentIndex < 0) {
+      currentIndex = questionBank.size - 1
+    }
   }
 
-  override fun onCleared() {
-    super.onCleared()
-    Log.d(TAG, "ViewModel instance about to be destroyed")
+  fun updateAnswer(userAnswer: Boolean) {
+    questionBank[currentIndex].userAnswer = userAnswer
+  }
+
+  fun updateScore() {
+    questionsLeft = 0
+    score = 0
+    for (i in questionBank) {
+      if (i.userAnswer == null) {
+        questionsLeft++
+      } else if (i.userAnswer == i.answer) {
+        score++
+      }
+    }
+  }
+
+  fun resetQuiz() {
+    for (i in questionBank) {
+      i.userAnswer = null
+    }
+    currentIndex = 0
   }
 }
