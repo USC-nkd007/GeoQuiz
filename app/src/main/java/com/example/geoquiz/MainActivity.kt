@@ -1,9 +1,11 @@
 package com.example.geoquiz
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.example.geoquiz.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +18,15 @@ class MainActivity : AppCompatActivity() {
 
 
   private val quizViewModel: QuizViewModel by viewModels()
+
+  private val cheatLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()) {
+    result ->
+    if (result.resultCode == Activity.RESULT_OK) {
+      quizViewModel.isCheater =
+        result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+    }
+  }
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Log.d(TAG, "onCreate(Bundle?) called")
@@ -54,6 +65,13 @@ class MainActivity : AppCompatActivity() {
     binding.questionTextView.setOnClickListener {
       quizViewModel.changeQuestion(1)
       updateQuestion()
+    }
+
+    binding.cheatButton?.setOnClickListener {
+      val answerIsTrue = quizViewModel.currentQuestionAnswer
+      val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+      cheatLauncher.launch(intent)
+      binding.cheatButton?.isEnabled = false
     }
 
     updateQuestion()
@@ -104,10 +122,10 @@ class MainActivity : AppCompatActivity() {
   private fun checkAnswer(userAnswer: Boolean, contextView: View) {
     quizViewModel.updateAnswer(userAnswer)
 
-    val messageResId: Int = if (userAnswer == quizViewModel.currentQuestionAnswer) {
-      R.string.correct_toast
-    } else {
-      R.string.incorrect_toast
+    val messageResId = when {
+      quizViewModel.isCheater -> R.string.judgment_toast
+      userAnswer == quizViewModel.currentQuestionAnswer -> R.string.correct_toast
+      else -> R.string.incorrect_toast
     }
 
     Snackbar.make(contextView, messageResId, Snackbar.LENGTH_SHORT).show()
@@ -119,7 +137,15 @@ class MainActivity : AppCompatActivity() {
     toggleQuestionButtons(false)
 
     val percentage = (quizViewModel.score * 100) / quizViewModel.totalQuestions
-    val scoreText = getString(R.string.score_message, quizViewModel.score, quizViewModel.totalQuestions, percentage)
+    val scoreText = when {
+      quizViewModel.isCheater -> getString(R.string.judgment_toast)
+      else -> getString(
+        R.string.score_message,
+        quizViewModel.score,
+        quizViewModel.totalQuestions,
+        percentage
+      )
+    }
     binding.questionTextView.text = scoreText
   }
 
@@ -132,5 +158,6 @@ class MainActivity : AppCompatActivity() {
   private fun toggleAnswerButtons(state: Boolean) {
     binding.trueButton.isEnabled = state
     binding.falseButton.isEnabled = state
+    binding.cheatButton?.isEnabled = state
   }
 }
