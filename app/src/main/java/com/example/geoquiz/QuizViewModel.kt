@@ -17,55 +17,56 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
   )
 
   var isCheater: Boolean
-    get() = savedStateHandle.get(IS_CHEATER_KEY) ?: false
+    get() = savedStateHandle[IS_CHEATER_KEY] ?: false
     set(value) = savedStateHandle.set(IS_CHEATER_KEY, value)
 
   private var currentIndex: Int
     get() = savedStateHandle[CURRENT_INDEX_KEY] ?: 0
     set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
 
-  var score: Int = 0
-  var questionsLeft: Int = 0
+//  var score: Int = 0
+//  var questionsLeft: Int = 0
   val currentQuestionAnswer: Boolean
     get() = questionBank[currentIndex].answer
 
-  val currentQuestionUserAnswer: Boolean?
-    get() = questionBank[currentIndex].userAnswer
+//  val currentQuestionUserAnswer: Boolean?
+//    get() = questionBank[currentIndex].userAnswer
 
   val currentQuestionText: Int
     get() = questionBank[currentIndex].textResId
 
-  val totalQuestions: Int
-    get() = questionBank.size
+//  val totalQuestions: Int
+//    get() = questionBank.size
 
   fun changeQuestion(modifier: Int) {
     currentIndex = (currentIndex + modifier) % questionBank.size
     if (currentIndex < 0) {
       currentIndex = questionBank.size - 1
     }
+    isCheater = false
   }
 
   fun updateAnswer(userAnswer: Boolean) {
     questionBank[currentIndex].userAnswer = userAnswer
   }
 
-  fun updateScore() {
-    questionsLeft = 0
-    score = 0
-    for (i in questionBank) {
-      if (i.userAnswer == null) {
-        questionsLeft++
-      } else if (i.userAnswer == i.answer) {
-        score++
-      }
-    }
-  }
+//  fun updateScore() {
+//    questionsLeft = 0
+//    score = 0
+//    for (i in questionBank) {
+//      if (i.userAnswer == null) {
+//        questionsLeft++
+//      } else if (i.userAnswer == i.answer) {
+//        score++
+//      }
+//    }
+//  }
 
-  fun resetQuiz() {
-    for (i in questionBank) {
-      i.userAnswer = null
-    }
-    currentIndex = 0
-    isCheater = false
-  }
+//  fun resetQuiz() {
+//    for (i in questionBank) {
+//      i.userAnswer = null
+//    }
+//    currentIndex = 0
+//    isCheater = false
+//  }
 }

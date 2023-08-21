@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     Log.d(TAG, "Got a QuizViewModel: $quizViewModel")
 
-    binding.resetButton.isEnabled = false
+//    binding.resetButton.isEnabled = false
 
     binding.trueButton.setOnClickListener { view: View ->
       checkAnswer(true, view)
@@ -55,23 +55,23 @@ class MainActivity : AppCompatActivity() {
       updateQuestion()
     }
 
-    binding.resetButton.setOnClickListener {
-      quizViewModel.resetQuiz()
-      toggleQuestionButtons(true)
-      toggleAnswerButtons(true)
-      updateQuestion()
-    }
+//    binding.resetButton.setOnClickListener {
+//      quizViewModel.resetQuiz()
+//      toggleQuestionButtons(true)
+//      toggleAnswerButtons(true)
+//      updateQuestion()
+//    }
 
     binding.questionTextView.setOnClickListener {
       quizViewModel.changeQuestion(1)
       updateQuestion()
     }
 
-    binding.cheatButton?.setOnClickListener {
+    binding.cheatButton.setOnClickListener {
       val answerIsTrue = quizViewModel.currentQuestionAnswer
       val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
       cheatLauncher.launch(intent)
-      binding.cheatButton?.isEnabled = false
+//      binding.cheatButton.isEnabled = false
     }
 
     updateQuestion()
@@ -105,18 +105,18 @@ class MainActivity : AppCompatActivity() {
   private fun updateQuestion() {
     val questionTextResId = quizViewModel.currentQuestionText
     binding.questionTextView.setText(questionTextResId)
-    if (quizViewModel.currentQuestionUserAnswer == null) {
-      toggleAnswerButtons(true)
-    } else {
-      toggleAnswerButtons(false)
-    }
-    quizViewModel.updateScore()
-    if (quizViewModel.questionsLeft > 0) {
-      toggleQuestionButtons(true)
-    } else {
-      toggleQuestionButtons(false)
-      printScore()
-    }
+//    if (quizViewModel.currentQuestionUserAnswer == null) {
+//      toggleAnswerButtons(true)
+//    } else {
+//      toggleAnswerButtons(false)
+//    }
+//    quizViewModel.updateScore()
+//    if (quizViewModel.questionsLeft > 0) {
+//      toggleQuestionButtons(true)
+//    } else {
+//      toggleQuestionButtons(false)
+//      printScore()
+//    }
   }
 
   private fun checkAnswer(userAnswer: Boolean, contextView: View) {
@@ -129,35 +129,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     Snackbar.make(contextView, messageResId, Snackbar.LENGTH_SHORT).show()
-    toggleAnswerButtons(false)
+//    toggleAnswerButtons(false)
     updateQuestion()
   }
 
-  private fun printScore() {
-    toggleQuestionButtons(false)
+//  private fun printScore() {
+//    toggleQuestionButtons(false)
+//
+//    val percentage = (quizViewModel.score * 100) / quizViewModel.totalQuestions
+//    val scoreText = when {
+//      quizViewModel.isCheater -> getString(R.string.judgment_toast)
+//      else -> getString(
+//        R.string.score_message,
+//        quizViewModel.score,
+//        quizViewModel.totalQuestions,
+//        percentage
+//      )
+//    }
+//    binding.questionTextView.text = scoreText
+//  }
 
-    val percentage = (quizViewModel.score * 100) / quizViewModel.totalQuestions
-    val scoreText = when {
-      quizViewModel.isCheater -> getString(R.string.judgment_toast)
-      else -> getString(
-        R.string.score_message,
-        quizViewModel.score,
-        quizViewModel.totalQuestions,
-        percentage
-      )
-    }
-    binding.questionTextView.text = scoreText
-  }
-
-  private fun toggleQuestionButtons(state: Boolean) {
-    binding.nextButton.isEnabled = state
-    binding.prevButton.isEnabled = state
-    binding.resetButton.isEnabled = !state
-  }
-
-  private fun toggleAnswerButtons(state: Boolean) {
-    binding.trueButton.isEnabled = state
-    binding.falseButton.isEnabled = state
-    binding.cheatButton?.isEnabled = state
-  }
+//  private fun toggleQuestionButtons(state: Boolean) {
+//    binding.nextButton.isEnabled = state
+//    binding.prevButton.isEnabled = state
+//    binding.resetButton.isEnabled = !state
+//  }
+//
+//  private fun toggleAnswerButtons(state: Boolean) {
+//    binding.trueButton.isEnabled = state
+//    binding.falseButton.isEnabled = state
+//    binding.cheatButton?.isEnabled = state
+//  }
 }
