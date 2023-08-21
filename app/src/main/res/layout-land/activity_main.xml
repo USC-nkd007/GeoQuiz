@@ -57,12 +57,27 @@
     android:layout_margin = "4dp"
     android:text="@string/next_button"
     tools:ignore="ButtonStyle" />
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|center_horizontal">
 
   <Button
-    android:id="@+id/reset_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|center_horizontal"
-    android:text="@string/reset_button" />
+      android:id="@+id/cheat_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/cheat_button"
+      android:layout_margin="4dp"
+      tools:ignore="ButtonStyle" />
+
+  <Button
+      android:id="@+id/reset_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/reset_button"
+      android:layout_margin="4dp"
+      tools:ignore="ButtonStyle" />
+
+  </LinearLayout>
 
 </FrameLayout>
